@@ -1,0 +1,9 @@
+{
+  "_comment": "Merged into ~/.claude/settings.json by merge-hooks.py. COMMAND is rewritten to the absolute install path. Identified for idempotent install/uninstall by the substring 'telemetry-collect'.",
+  "events": ["SessionStart", "Stop", "SubagentStop", "PreCompact", "SessionEnd"],
+  "entry": {
+    "hooks": [
+      { "type": "command", "command": "bash COMMAND" }
+    ]
+  }
+}
