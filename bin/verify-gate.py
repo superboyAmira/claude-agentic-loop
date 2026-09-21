@@ -217,6 +217,8 @@ def cmd_run(args, root: Path) -> int:
 
     logdir = results_dir(root)
     logdir.mkdir(parents=True, exist_ok=True)
+    if not (logdir / ".gitignore").exists():
+        (logdir / ".gitignore").write_text("*\n")  # runtime results never get committed
     t0 = time.monotonic()
     results, blocked = [], False
     for step in steps:

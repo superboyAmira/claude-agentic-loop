@@ -146,7 +146,10 @@ entries, Stage report, then continue.
 6. **Baseline:** `verify-gate.py run --label 0`. Red -> user gate: fix first / narrow the gate /
    stop ([verify-gate.md](references/verify-gate.md)). Do not start implementation on an
    unexplained red baseline.
-7. `git status -sb` + `git log --oneline -5`.
+7. `git status -sb` + `git log --oneline -5`. Check `.gitignore` has every runtime entry from
+   [step-minus-one.md](references/step-minus-one.md) (`.llm/telemetry/`, `.llm/verify/`,
+   `.llm/loop-state.json`, `.llm/loop-state.*.json`); projects bootstrapped before 1.1 lack the
+   last three. Add the missing ones.
 8. `loop-state.py init --session <yyyymmdd-slug> --entry <mode>` (slug from the task; `set` it
    later if brainstorm renames it).
 9. 5-10 line index summary -> Stage report -> step 1 (or skip brainstorm).

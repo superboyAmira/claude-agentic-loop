@@ -101,6 +101,10 @@ def cmd_init(args, root: Path) -> int:
     }
     save(root, st)
     print(f"initialised {path.relative_to(root)} (session {args.session}, entry {args.entry})")
+    if git(root, "rev-parse", "--is-inside-work-tree") == "true" and \
+            git(root, "check-ignore", "-q", str(path.relative_to(root))) is None:
+        print("WARNING: .llm/loop-state.json is not gitignored. Add to .gitignore:\n"
+              "  .llm/telemetry/\n  .llm/verify/\n  .llm/loop-state.json\n  .llm/loop-state.*.json")
     return 0
 
 

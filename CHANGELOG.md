@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.1.1 - 2026-09-21
+
+- Projects bootstrapped before 1.1 skip Step -1, so their `.gitignore` never got the new
+  runtime entries: `.llm/verify/` now ignores itself, `loop-state.py init` warns when the
+  checkpoint is committable, and Step 0 adds the missing entries.
+
 ## 1.1.0 - 2026-09-21
 
 Reliability pass driven by a review of the loop against the multi-agent failure research
