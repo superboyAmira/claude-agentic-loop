@@ -30,6 +30,13 @@ def resolve_dir(cwd=None):
     return Path.home() / ".claude" / "agentic-loop" / "telemetry" / f"{name}-{h}"
 
 
+def yield_path():
+    """User-wide review-yield log: one line per reviewer invocation, across projects and runs."""
+    home = os.environ.get("CLAUDE_HOME")
+    base = Path(home).expanduser() if home else Path.home() / ".claude"
+    return base / "agentic-loop" / "telemetry" / "review-yield.jsonl"
+
+
 def ensure_dir(d):
     d.mkdir(parents=True, exist_ok=True)
     gi = d / ".gitignore"

@@ -25,6 +25,11 @@ if ! git diff --quiet || ! git diff --cached --quiet; then
   exit 1
 fi
 
+if ! python3 bin/check-models.py --root "$ROOT"; then
+  echo "! model-routing drift - fix it before releasing (python3 bin/check-models.py --fix)." >&2
+  exit 1
+fi
+
 CUR="$(cat VERSION 2>/dev/null || echo 0.0.0)"
 IFS='.' read -r MAJOR MINOR PATCH <<<"$CUR"
 
@@ -43,12 +48,12 @@ LOG_RANGE=""
 if git rev-parse -q --verify "v$CUR" >/dev/null 2>&1; then
   LOG_RANGE="v$CUR..HEAD"
 fi
-CHANGES="$(git log --oneline --no-merges ${LOG_RANGE:+"$LOG_RANGE"} -- skills agents hooks install.sh 2>/dev/null || true)"
+CHANGES="$(git log --oneline --no-merges ${LOG_RANGE:+"$LOG_RANGE"} -- skills agents hooks bin evals install.sh 2>/dev/null || true)"
 [[ -z "$CHANGES" ]] && CHANGES="(no tracked commits since last release)"
 
 TMP="$(mktemp)"
 {
-  echo "## $NEW — $(date +%Y-%m-%d)"
+  echo "## $NEW - $(date +%Y-%m-%d)"
   echo
   echo "$CHANGES" | sed 's/^/- /'
   echo

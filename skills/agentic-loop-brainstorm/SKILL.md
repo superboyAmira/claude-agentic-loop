@@ -15,8 +15,8 @@ Inspired by [cc-thingz brainstorm](https://github.com/umputun/cc-thingz).
 
 ## Model
 
-Agentic-loop **step 1**. Parent: **Opus** (`/model opus`). If the picker is on Sonnet/Haiku,
-stop and ask the user to switch — see
+Agentic-loop **step 1**. Parent: the **`planner`** role (`/model <planner>`). If the picker is
+on a smaller model, stop and ask the user to switch - roles resolve in
 `~/.claude/skills/agentic-loop/references/model-routing.md`.
 
 ### Hard ban: no research subagent fan-out
@@ -25,7 +25,7 @@ Brainstorm is a **parent-only dialogue**, not a fan-out job.
 
 - **Do NOT** launch `Agent` / Explore subagents to map the codebase.
 - Gather context with Read/Glob/Grep/Bash in this parent session.
-- If parallel research is unavoidable, only `opus` subagents; synthesize in the parent.
+- If parallel research is unavoidable, only `planner`-model subagents; synthesize in the parent.
 - Never treat a subagent map as the brainstorm outcome.
 
 ## Documentation (mandatory)
@@ -35,7 +35,9 @@ Follow `~/.claude/skills/agentic-loop/references/session-docs.md`.
 Before leaving this skill:
 
 1. Create/update `docs/agentic/yyyymmdd-<slug>/brainstorm.md` with the **full** Q&A,
-   approaches, selected design, open questions.
+   approaches, selected design, open questions. Constraints the user states in passing
+   ("keep the API backwards-compatible", "no new dependencies") go into a `## Constraints`
+   list there - they are the first thing compaction loses.
 2. Create/update `needs-documenting.md` — what else still needs project docs (README, business
    process, ADR, API, metrics, manifest entries).
 3. Create `README.md` in the session folder if missing.

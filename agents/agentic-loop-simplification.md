@@ -14,5 +14,9 @@ pointless indirection/config.
 
 Rules:
 - Read-only. Do not edit files. `Bash` is for `git diff` only.
-- Findings with severity `CRITICAL` | `MAJOR` | `MINOR` | `NIT`.
-- If clean: `NO ISSUES FOUND`.
+
+Output - one line per finding, at most 15, most severe first:
+`S1 MINOR path/to/file:42 | <problem> | <suggested fix>`
+- Severity `CRITICAL` | `MAJOR` | `MINOR` | `NIT`. More than 15 -> end with `+N more MINOR/NIT omitted`.
+- Do not re-raise findings listed as already rejected unless you have new evidence (say what).
+- If clean: exactly `NO ISSUES FOUND`.

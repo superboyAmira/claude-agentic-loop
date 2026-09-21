@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Pull your locally-installed copy (~/.claude/skills, ~/.claude/agents,
-# ~/.claude/agentic-loop/hooks) back into this repo, so edits you made while
-# testing an installed skill/agent get published instead of lost.
+# ~/.claude/agentic-loop/{hooks,bin}) back into this repo, so edits you made
+# while testing an installed skill/agent/script get published instead of lost.
 #
 # Mirror of the Cursor original's sync-from-local.sh. No path rewriting is
 # needed here (unlike the Cursor version): every reference in these skill
@@ -19,6 +19,7 @@ CLAUDE_HOME="${CLAUDE_HOME:-$HOME/.claude}"
 SRC_SKILLS="$CLAUDE_HOME/skills"
 SRC_AGENTS="$CLAUDE_HOME/agents"
 SRC_HOOKS="$CLAUDE_HOME/agentic-loop/hooks"
+SRC_BIN="$CLAUDE_HOME/agentic-loop/bin"
 
 DRY_RUN=0
 COMMIT_MSG=""
@@ -59,6 +60,13 @@ HOOK_FILES=(
   merge-hooks.py
   _ledger.py
   hooks.template.json
+)
+BIN_FILES=(
+  _common.py
+  verify-gate.py
+  loop-state.py
+  check-models.py
+  eval.py
 )
 
 RSYNC_FLAGS=(-a -c --delete)
@@ -107,6 +115,19 @@ for f in "${HOOK_FILES[@]}"; do
   fi
 done
 
+for f in "${BIN_FILES[@]}"; do
+  if [[ ! -f "$SRC_BIN/$f" ]]; then
+    echo "  ! not installed, skipping: bin/$f" >&2
+    missing=1
+    continue
+  fi
+  if [[ "$DRY_RUN" -eq 1 ]]; then
+    diff -q "$SRC_BIN/$f" "$ROOT/bin/$f" >/dev/null 2>&1 || echo "  would update: bin/$f"
+  else
+    cp "$SRC_BIN/$f" "$ROOT/bin/$f"
+  fi
+done
+
 if [[ "$missing" -eq 1 ]]; then
   echo "  (some pieces aren't installed locally — run ./install.sh first if that's unexpected)" >&2
 fi
@@ -117,7 +138,7 @@ if [[ "$DRY_RUN" -eq 1 ]]; then
 fi
 
 cd "$ROOT"
-CHANGED="$(git status --porcelain -- skills agents hooks)"
+CHANGED="$(git status --porcelain -- skills agents hooks bin)"
 if [[ -z "$CHANGED" ]]; then
   echo "→ no changes — installed copy already matches the repo"
   exit 0
@@ -127,11 +148,15 @@ echo
 echo "→ changes pulled in:"
 echo "$CHANGED"
 
-git add skills agents hooks
+git add skills agents hooks bin
+
+if ! python3 bin/check-models.py --root "$ROOT"; then
+  echo "  ! model-routing drift pulled in - fix with: python3 bin/check-models.py --fix" >&2
+fi
 
 echo
 echo "→ diff summary:"
-git --no-pager diff --cached --stat -- skills agents hooks
+git --no-pager diff --cached --stat -- skills agents hooks bin
 
 if [[ -z "$COMMIT_MSG" ]]; then
   echo

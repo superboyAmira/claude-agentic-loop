@@ -11,17 +11,31 @@
 - Related patterns found:
 - Dependencies:
 
+## Constraints
+<!-- Every constraint from brainstorm/planning, one line each. Task subagents get this section
+     verbatim; it survives compaction because it lives in the file, not in chat. -->
+- e.g. keep the public API backwards-compatible
+- e.g. no new dependencies
+
 ## Development Approach
 - **testing approach**: [TDD / Regular]
 - Complete each task fully before the next
 - Small, focused changes
 - Every task MUST include new/updated tests for its code changes
-- All tests must pass before starting the next task
+- The verify gate must be green before the next task starts
+- Never delete, skip or weaken existing tests to make a task pass
 - Update this plan file when scope changes during implementation
 
 ## Testing Strategy
 - **unit tests**: required for every implementation task
 - **e2e / integration**: if the project has them and the change touches those surfaces
+
+## Verification
+- Gate: `.llm/verify.json` - [list its steps, e.g. build · vet · lint · test]
+- The orchestrator runs the gate after every task and before reviews (step 4.5); a task is done
+  only when its checkboxes are `[x]` and the gate is green
+- Tasks that are red by design (TDD: tests before code) say so explicitly:
+  `(fails until Task N)`
 
 ## Progress Tracking
 - Mark completed items with `[x]` immediately when done
@@ -48,11 +62,11 @@
 - [ ] specific implementation step
 - [ ] write tests for success cases
 - [ ] write tests for error/edge cases
-- [ ] run tests — must pass before next task
+- [ ] run the task's tests - must pass before next task
 
 ### Task N-1: Verify acceptance criteria
 - [ ] verify Overview requirements are met
-- [ ] run full relevant test suite
+- [ ] run the full verify gate (`verify-gate.py run`) - green
 - [ ] verify edge cases handled
 
 ### Task N: Update documentation

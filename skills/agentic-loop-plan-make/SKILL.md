@@ -15,9 +15,9 @@ Inspired by [cc-thingz planning:make](https://github.com/umputun/cc-thingz).
 
 ## Model
 
-Steps **0-2** parent: **Opus** (`/model opus`).
+Steps **0-2** parent: the **`planner`** role (`/model <planner>`).
 **Auto review (step 3):** `Agent` tool -> `subagent_type: agentic-loop-plan-review` (pinned to
-`opus`).
+the `plan-reviewer` role). Roles resolve in `~/.claude/skills/agentic-loop/references/model-routing.md`.
 
 ## Documentation (mandatory)
 
@@ -63,16 +63,19 @@ Record answers in `planning.md`.
 3. Flush `planning.md` + update `needs-documenting.md`.
 4. In the plan Overview, link `docs/agentic/yyyymmdd-<slug>/`.
 
-Hard requirements: numbered tasks, Files blocks, tests as separate checkboxes, acceptance +
-docs tasks at the end.
+Hard requirements: numbered tasks, Files blocks, tests as separate checkboxes, a Constraints
+section (every constraint from brainstorm/planning), a Verification section (the verify gate
+steps from `.llm/verify.json`), acceptance + docs tasks at the end.
+
+`loop-state.py set --plan docs/plans/yyyymmdd-<slug>.md` once the file exists.
 
 ## Step 3: Plan review gate
 
 | Option | Action |
 |--------|--------|
-| Auto review | `Agent` -> `agentic-loop-plan-review`. On `NEEDS REVISION`, fix plan + docs, re-ask |
+| Auto review | `Agent` -> `agentic-loop-plan-review`. On `NEEDS REVISION`: `loop-state.py bump plan_review_rounds --scope 3` (exit 3 -> ask the user: approve as is / revise together / stop), fix plan + docs, re-ask |
 | Revise with me | Interactive revision |
-| Implement | -> `agentic-loop-plan-exec` |
+| Implement | `loop-state.py gate plan-review pass` -> `agentic-loop-plan-exec` |
 | Done | Stop |
 
 No coding in this skill. Stage report after plan-make and after plan-review.

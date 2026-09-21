@@ -13,10 +13,28 @@ docs/agentic/yyyymmdd-<slug>/
   brainstorm.md       # structured brainstorm dialogue + decisions
   planning.md         # plan-make Q&A, approaches, constraints
   needs-documenting.md
+  progress.md         # plan-exec / review log: [decision] / [deviation] lines, phase notes
+  telemetry.md        # Stage reports + Loop cost summary
   plan.md             # optional pointer/copy of docs/plans/...
 ```
 
 Also keep the executable plan at `docs/plans/yyyymmdd-<slug>.md` (source of truth for `plan-exec`).
+The loop's position lives in `.llm/loop-state.json` (see loop-state.md); these files hold the
+content a resumed session needs to reload.
+
+## progress.md (written from step 4 on)
+
+```markdown
+# Progress - <title>
+- plan: docs/plans/yyyymmdd-<slug>.md · branch: <b> · started: <iso>
+- Task 1: done (gate green)
+- [decision] ... - reason: ...
+- [deviation] ... - reason: ...
+- Review phase 1, iteration 2: fixer accepted 0 -> stopped (no progress)
+```
+
+Short lines only; no logs (those live in `.llm/verify/`). It replaces the old
+`/tmp/progress-<plan>.txt`, which did not survive a reboot or a new session.
 
 ## brainstorm.md (required after step 1)
 

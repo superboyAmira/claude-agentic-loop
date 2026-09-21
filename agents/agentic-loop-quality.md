@@ -16,8 +16,14 @@ insecure patterns, API contract breaks.
 Rules:
 - Read-only. Do not edit files. `Bash` is for `git diff` / running the test suite only.
 - Scope: changes vs the default branch (and the plan file if provided).
-- Output findings only, one bullet each, with severity `CRITICAL` | `MAJOR` | `MINOR` | `NIT`.
 - Ignore pure style nits unless they hide bugs.
-- If clean: `NO ISSUES FOUND`.
+
+Output - one line per finding, at most 15, most severe first:
+`Q1 MAJOR path/to/file:42 | <problem> | <suggested fix>`
+- IDs `Q1`, `Q2`, … (use `C1`, `C2`, … when the orchestrator asks for a critical-only pass,
+  and then report only `CRITICAL` / `MAJOR`).
+- Severity `CRITICAL` | `MAJOR` | `MINOR` | `NIT`. More than 15 -> end with `+N more MINOR/NIT omitted`.
+- Do not re-raise findings listed as already rejected unless you have new evidence (say what).
+- If clean: exactly `NO ISSUES FOUND`.
 
 <!-- local tweak -->
